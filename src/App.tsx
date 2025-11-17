@@ -13,7 +13,7 @@ function App() {
   const [isInitialLoad, setIsInitialLoad] = useState(true)
   const { isLoading } = useGetMoviesQuery({ page: 1, limit: 20 })
   const loadStartTime = useRef<number>(Date.now())
-  const MIN_LOADING_TIME = 5000
+  const MIN_LOADING_TIME = 2000
 
   useEffect(() => {
     document.body.className = theme
@@ -35,15 +35,17 @@ function App() {
   return (
     <BrowserRouter>
       {isInitialLoad && <LoadingScreen />}
-      <div className={`app-container ${theme}`}>
-        <main className="main-content">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
-          </Routes>
-        </main>
-        <BottomNavigation />
-      </div>
+      {!isInitialLoad && (
+        <div className={`app-container ${theme}`}>
+          <main className="main-content">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/about" element={<About />} />
+            </Routes>
+          </main>
+          <BottomNavigation />
+        </div>
+      )}
     </BrowserRouter>
   )
 }
