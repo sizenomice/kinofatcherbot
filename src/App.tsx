@@ -18,7 +18,7 @@ function App() {
       }}
     >
       <img src="/favicon.svg" alt="KinoFatcherBot" style={{ width: '100px', height: '100px', backgroundColor: '#fff', borderRadius: '50%' }} />
-      <div style={{ fontSize: '24px', fontWeight: 600 }}>KinoFetcherBot</div>
+      <div style={{ fontSize: '24px', fontWeight: 600 }}>KinoFatcherBot</div>
     </div>
   )
 }
