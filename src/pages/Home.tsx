@@ -1,15 +1,23 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useSearchMoviesQuery, useGetMoviesQuery } from '../store/slices/poiskkinoSlice'
 import { useDebounce } from '../hooks/useDebounce'
+import { useAppDispatch } from '../hooks/useAppDispatch'
+import { useAppSelector } from '../hooks/useAppSelector'
+import {
+  setSearchQuery,
+  setPage,
+  setAllMovies,
+  appendMovies,
+  setHasMore,
+  resetPagination,
+} from '../store/slices/searchSlice'
 import type { Movie } from '../store/slices/poiskkinoSlice'
 import MoviePopup from '../components/MoviePopup'
 import './Home.css'
 
 function Home() {
-  const [searchQuery, setSearchQuery] = useState('')
-  const [page, setPage] = useState(1)
-  const [allMovies, setAllMovies] = useState<Movie[]>([])
-  const [hasMore, setHasMore] = useState(true)
+  const dispatch = useAppDispatch()
+  const { searchQuery, page, allMovies, hasMore } = useAppSelector((state) => state.search)
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null)
   const observerTarget = useRef<HTMLDivElement>(null)
   
@@ -50,46 +58,40 @@ function Home() {
   const showLoading = isLoading || isTyping
 
   useEffect(() => {
-    setPage(1)
-    setAllMovies([])
-    setHasMore(true)
-  }, [debouncedSearchQuery])
+    dispatch(resetPagination())
+  }, [debouncedSearchQuery, dispatch])
 
   // Очищаем список сразу при начале ввода, до debounce
   useEffect(() => {
     if (searchQuery.trim() && !debouncedSearchQuery.trim()) {
-      setAllMovies([])
-      setHasMore(true)
+      dispatch(setAllMovies([]))
+      dispatch(setHasMore(true))
     }
-  }, [searchQuery, debouncedSearchQuery])
+  }, [searchQuery, debouncedSearchQuery, dispatch])
 
   useEffect(() => {
     if (currentData?.docs && currentData.docs.length > 0) {
       if (page === 1) {
-        setAllMovies(currentData.docs)
+        dispatch(setAllMovies(currentData.docs))
       } else {
-        setAllMovies(prev => {
-          const existingIds = new Set(prev.map(m => m.id))
-          const newMovies = currentData.docs.filter(m => !existingIds.has(m.id))
-          return [...prev, ...newMovies]
-        })
+        dispatch(appendMovies(currentData.docs))
       }
       
       const totalPages = currentData.pages || 1
       const hasMorePages = page < totalPages
       const hasMoreItems = currentData.docs.length >= (currentData.limit || 20)
-      setHasMore(hasMorePages && hasMoreItems)
+      dispatch(setHasMore(hasMorePages && hasMoreItems))
     } else if (currentData?.docs && currentData.docs.length === 0 && page > 1) {
-      setHasMore(false)
+      dispatch(setHasMore(false))
     }
-  }, [currentData, page])
+  }, [currentData, page, dispatch])
 
   const handleObserver = useCallback((entries: IntersectionObserverEntry[]) => {
     const [target] = entries
     if (target.isIntersecting && hasMore && !isLoading && !isTyping && allMovies.length > 0) {
-      setPage(prev => prev + 1)
+      dispatch(setPage(page + 1))
     }
-  }, [hasMore, isLoading, isTyping, allMovies.length])
+  }, [hasMore, isLoading, isTyping, allMovies.length, page, dispatch])
 
   useEffect(() => {
     const element = observerTarget.current
@@ -109,8 +111,8 @@ function Home() {
   }, [handleObserver, hasMore])
 
   const handleClear = () => {
-    setSearchQuery('')
-    setPage(1)
+    dispatch(setSearchQuery(''))
+    dispatch(resetPagination())
   }
 
   return (
@@ -127,7 +129,7 @@ function Home() {
               className="search-input"
               placeholder="Введите название фильма..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => dispatch(setSearchQuery(e.target.value))}
             />
             {searchQuery && (
               <button
