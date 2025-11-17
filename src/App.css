@@ -32,12 +32,15 @@ body::before {
   background-size: auto 45%, auto;
   background-repeat: no-repeat, no-repeat;
   z-index: -1;
+  visibility: hidden;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease, visibility 0s 0.3s;
 }
 
 body.loaded::before {
+  visibility: visible;
   opacity: 1;
+  transition: opacity 0.3s ease, visibility 0s;
 }
 
 .app-container {

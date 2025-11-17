@@ -14,6 +14,12 @@
         window.Telegram?.WebApp?.requestFullscreen?.()
       }
     </script>
+    <style>
+      body::before {
+        visibility: hidden;
+        opacity: 0;
+      }
+    </style>
   </head>
   <body style="margin: 0; padding: calc(var(--tg-content-safe-area-inset-top, 0px) + var(--tg-safe-area-inset-top, 0px)) calc(var(--tg-content-safe-area-inset-right, 0px) + var(--tg-safe-area-inset-right, 0px)) calc(var(--tg-content-safe-area-inset-bottom, 0px) + var(--tg-safe-area-inset-bottom, 0px)) calc(var(--tg-content-safe-area-inset-left, 0px) + var(--tg-safe-area-inset-left, 0px));">
     <div id="root"></div>
