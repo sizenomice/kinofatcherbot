@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react'
 import { useSearchMoviesQuery, useGetMoviesQuery } from '../store/slices/poiskkinoSlice'
 import { useDebounce } from '../hooks/useDebounce'
 import type { Movie } from '../store/slices/poiskkinoSlice'
+import MoviePopup from '../components/MoviePopup'
 import './Home.css'
 
 function Home() {
@@ -9,6 +10,7 @@ function Home() {
   const [page, setPage] = useState(1)
   const [allMovies, setAllMovies] = useState<Movie[]>([])
   const [hasMore, setHasMore] = useState(true)
+  const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null)
   const observerTarget = useRef<HTMLDivElement>(null)
   
   const debouncedSearchQuery = useDebounce(searchQuery, 500)
@@ -166,7 +168,11 @@ function Home() {
         <>
           <div className="movies-grid">
             {allMovies.map((movie) => (
-              <div key={movie.id} className="movie-card">
+              <div 
+                key={movie.id} 
+                className="movie-card"
+                onClick={() => setSelectedMovie(movie)}
+              >
                 <div className="movie-poster">
                   <img
                     src={movie.poster?.url || movie.poster?.previewUrl || 'https://via.placeholder.com/300x450?text=No+Image'}
@@ -246,6 +252,11 @@ function Home() {
           <p className="empty-subtitle">Попробуйте изменить запрос</p>
         </div>
       )}
+
+      <MoviePopup 
+        movie={selectedMovie} 
+        onClose={() => setSelectedMovie(null)} 
+      />
     </div>
   )
 }

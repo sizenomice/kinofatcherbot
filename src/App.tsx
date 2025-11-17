@@ -13,7 +13,7 @@ function App() {
   const [isInitialLoad, setIsInitialLoad] = useState(true)
   const { isLoading } = useGetMoviesQuery({ page: 1, limit: 20 })
   const loadStartTime = useRef<number>(Date.now())
-  const MIN_LOADING_TIME = 2000
+  const MIN_LOADING_TIME = 2700
 
   useEffect(() => {
     document.body.className = theme
