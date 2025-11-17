@@ -31,6 +31,9 @@ function Home() {
     { skip: !!debouncedSearchQuery.trim() }
   )
 
+  // Проверяем, идет ли активный ввод (searchQuery отличается от debouncedSearchQuery)
+  const isTyping = searchQuery.trim() !== debouncedSearchQuery.trim()
+  
   // Используем searchData только если есть debouncedSearchQuery
   // Если есть searchQuery, но еще нет debouncedSearchQuery - не показываем moviesData
   const currentData = debouncedSearchQuery.trim() 
@@ -40,6 +43,9 @@ function Home() {
     ? isSearching 
     : (searchQuery.trim() ? false : isLoadingMovies)
   const error = debouncedSearchQuery.trim() ? searchError : moviesError
+  
+  // Показываем loading если идет загрузка ИЛИ активный ввод
+  const showLoading = isLoading || isTyping
 
   useEffect(() => {
     setPage(1)
@@ -78,10 +84,10 @@ function Home() {
 
   const handleObserver = useCallback((entries: IntersectionObserverEntry[]) => {
     const [target] = entries
-    if (target.isIntersecting && hasMore && !isLoading && allMovies.length > 0) {
+    if (target.isIntersecting && hasMore && !isLoading && !isTyping && allMovies.length > 0) {
       setPage(prev => prev + 1)
     }
-  }, [hasMore, isLoading, allMovies.length])
+  }, [hasMore, isLoading, isTyping, allMovies.length])
 
   useEffect(() => {
     const element = observerTarget.current
@@ -144,7 +150,7 @@ function Home() {
         </div>
       )}
 
-      {(page === 1 && isLoading) || (searchQuery.trim() && !debouncedSearchQuery.trim()) ? (
+      {showLoading && page === 1 && allMovies.length === 0 ? (
         <div className="loading-container">
           <div className="loading-icon-wrapper">
             <img 
@@ -184,7 +190,7 @@ function Home() {
             ))}
           </div>
           
-          {isLoading && page > 1 && (
+          {isLoading && page > 1 && !isTyping && (
             <div className="loading-container" style={{ padding: '24px' }}>
               <div className="loading-icon-wrapper">
                 <img 
@@ -231,7 +237,7 @@ function Home() {
         </>
       )}
 
-      {!isLoading && allMovies.length === 0 && debouncedSearchQuery && (
+      {!showLoading && allMovies.length === 0 && debouncedSearchQuery.trim() && !isTyping && (
         <div className="empty-state">
           <svg className="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
