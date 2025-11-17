@@ -1,10 +1,9 @@
 function App() {
-    const tg = window.Telegram?.WebApp
-    tg?.ready()
-    tg?.expand()
-    if (['android', 'ios'].includes(tg?.platform)) {
-      tg?.requestFullscreen?.()
-    }
+  window.Telegram?.WebApp.ready()
+  window.Telegram?.WebApp?.expand()
+  if (['android', 'ios'].includes(window.Telegram?.WebApp?.platform)) {
+    window.Telegram?.WebApp?.requestFullscreen?.()
+  }
 
   return (
     <div
