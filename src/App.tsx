@@ -1,18 +1,10 @@
-import { useEffect } from 'react'
-
 function App() {
-  useEffect(() => {
     const tg = window.Telegram?.WebApp
     tg?.ready()
     tg?.expand()
-    tg?.requestFullscreen?.()
-
-    if (!tg?.requestFullscreen && document.documentElement.requestFullscreen) {
-      document.documentElement.requestFullscreen().catch(() => {
-        // ignore errors such as user gesture requirements
-      })
+    if (['android', 'ios'].includes(tg?.platform)) {
+      tg?.requestFullscreen?.()
     }
-  }, [])
 
   return (
     <div
