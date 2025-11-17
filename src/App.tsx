@@ -20,6 +20,11 @@ function App() {
     const classes = [theme]
     if (!isInitialLoad) {
       classes.push('loaded')
+      // Удаляем inline стиль из head после загрузки
+      const styleTag = document.querySelector('head style')
+      if (styleTag && styleTag.textContent?.includes('body::before')) {
+        styleTag.remove()
+      }
     }
     document.body.className = classes.join(' ')
   }, [theme, isInitialLoad])

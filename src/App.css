@@ -24,7 +24,7 @@ body::before {
   top: 0;
   left: 0;
   right: 0;
-  height: calc(var(--tg-content-safe-area-inset-top, 0px) + var(--tg-safe-area-inset-top, 0px));
+  height: 0;
   background-image: 
     url('/favicon.svg'),
     linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
@@ -32,15 +32,14 @@ body::before {
   background-size: auto 45%, auto;
   background-repeat: no-repeat, no-repeat;
   z-index: -1;
-  visibility: hidden;
   opacity: 0;
-  transition: opacity 0.3s ease, visibility 0s 0.3s;
+  transition: height 0s 0.3s, opacity 0.3s ease;
 }
 
 body.loaded::before {
-  visibility: visible;
-  opacity: 1;
-  transition: opacity 0.3s ease, visibility 0s;
+  height: calc(var(--tg-content-safe-area-inset-top, 0px) + var(--tg-safe-area-inset-top, 0px)) !important;
+  opacity: 1 !important;
+  transition: height 0s, opacity 0.3s ease;
 }
 
 .app-container {
