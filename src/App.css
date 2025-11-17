@@ -10,7 +10,7 @@ html, body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f9fafb;
+  background-color: #f3f4f6;
   overflow-y: hidden;
   overflow-x: hidden;
   height: 100%;
@@ -18,16 +18,26 @@ html, body {
   width: 100%;
 }
 
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: calc(var(--tg-content-safe-area-inset-top, 0px) + var(--tg-safe-area-inset-top, 0px));
+  background-color: #e5e7eb;
+  z-index: -1;
+}
+
 .app-container {
   min-height: 100vh;
-  max-height: 100vh;
-  height: 100vh;
   display: flex;
   flex-direction: column;
   padding-bottom: 80px;
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
+  background-color: #f3f4f6;
 }
 
 .main-content {
@@ -46,4 +56,8 @@ html, body {
 body.dark {
   background-color: #111827;
   color: #e5e7eb;
+}
+
+body.dark::before {
+  background-color: #111827;
 }
