@@ -6,6 +6,14 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>kinofatcherbot</title>
+    <script>
+      window.Telegram?.WebApp.ready()
+      window.Telegram?.WebApp?.expand()
+      window.Telegram?.WebApp?.disableVerticalSwipes()
+      if (['android', 'ios'].includes(window.Telegram?.WebApp?.platform)) {
+        window.Telegram?.WebApp?.requestFullscreen?.()
+      }
+    </script>
   </head>
   <body style="margin: 0;">
     <div id="root"></div>

@@ -1,12 +1,8 @@
 import { useState } from 'react'
 import { useTheme } from './hooks/useTheme'
-import { useTelegramWebApp } from './hooks/useTelegramWebApp'
-import { useSafeAreaTop } from './hooks/useSafeAreaTop'
 
 function App() {
-  useTelegramWebApp()
   const theme = useTheme()
-  const safeAreaTop = useSafeAreaTop()
 
   const [value, setValue] = useState('')
   const [entries, setEntries] = useState<string[]>([])
@@ -18,8 +14,6 @@ function App() {
     setValue('')
   }
 
-  console.log(safeAreaTop)
-
   return (
     <div
       style={{
@@ -30,7 +24,7 @@ function App() {
         justifyContent: 'flex-start',
         backgroundColor: theme.background,
         color: theme.text,
-        padding: `${safeAreaTop}px 20px 20px 20px`,
+        padding: `20px`,
         gap: '24px',
       }}
     >
