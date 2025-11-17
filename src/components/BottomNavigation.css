@@ -70,7 +70,6 @@
   font-weight: 600;
 }
 
-/* Dark mode support */
 .dark .bottom-navigation {
   background: linear-gradient(180deg, rgba(17, 24, 39, 0.95) 0%, rgba(17, 24, 39, 0.98) 100%);
   border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -88,4 +87,3 @@
 .dark .nav-item.active {
   color: #818cf8;
 }
-

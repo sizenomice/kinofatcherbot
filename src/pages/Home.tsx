@@ -15,12 +15,8 @@ function Home() {
     setError('')
     
     try {
-      // Здесь можно использовать реальный API для поиска фильмов
-      // Например, OMDb API, TMDB API и т.д.
-      // Для демонстрации используем заглушку
       await new Promise(resolve => setTimeout(resolve, 500))
       
-      // Заглушка данных
       const mockMovies = [
         {
           id: 1,

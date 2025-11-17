@@ -17,14 +17,16 @@
 
 .search-form {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 12px;
+  align-items: stretch;
 }
 
 .search-input-wrapper {
   position: relative;
   display: flex;
   align-items: center;
+  flex: 1;
 }
 
 .search-icon {
@@ -86,6 +88,8 @@
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 6px rgba(99, 102, 241, 0.25);
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .search-button:hover:not(:disabled) {
@@ -255,9 +259,16 @@
     font-size: 24px;
   }
 
+  .search-form {
+    flex-direction: column;
+  }
+
+  .search-button {
+    width: 100%;
+  }
+
   .movies-grid {
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     gap: 16px;
   }
 }
-
