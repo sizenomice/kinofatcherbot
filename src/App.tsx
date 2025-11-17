@@ -16,11 +16,9 @@ function App() {
   const MIN_LOADING_TIME = 2700
 
   useEffect(() => {
-    // Устанавливаем тему и статус загрузки одновременно
     const classes: string[] = [theme]
     if (!isInitialLoad) {
       classes.push('loaded')
-      // Удаляем inline стиль из head после загрузки
       const styleTag = document.querySelector('head style')
       if (styleTag && styleTag.textContent?.includes('body::before')) {
         styleTag.remove()

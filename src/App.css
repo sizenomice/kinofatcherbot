@@ -53,6 +53,12 @@ body.loaded::before {
   -webkit-overflow-scrolling: touch;
   background-color: #f3f4f6;
   box-sizing: border-box;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.app-container::-webkit-scrollbar {
+  display: none;
 }
 
 .main-content {
