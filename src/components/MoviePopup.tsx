@@ -27,12 +27,12 @@ function MoviePopup({ movie, onClose }: MoviePopupProps) {
       <div className="popup-overlay" onClick={onClose} />
       <div className="popup-container">
         <div className="popup-content">
-          <button className="popup-close" onClick={onClose} aria-label="Закрыть">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M18 6L6 18M6 6l12 12" />
-            </svg>
-          </button>
           <div className="popup-poster">
+            <button className="popup-close" onClick={onClose} aria-label="Закрыть">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+            </button>
             <img
               src={movie.poster?.url || movie.poster?.previewUrl || 'https://via.placeholder.com/300x450?text=No+Image'}
               alt={movie.name || movie.alternativeName || 'Фильм'}
