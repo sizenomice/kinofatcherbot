@@ -3,6 +3,7 @@ import { useTheme } from './hooks/useTheme'
 
 function App() {
   const theme = useTheme()
+  const isDark = theme === 'dark'
 
   const [value, setValue] = useState('')
   const [entries, setEntries] = useState<string[]>([])
@@ -14,6 +15,15 @@ function App() {
     setValue('')
   }
 
+  const colors = {
+    background: isDark ? '#000000' : '#ffffff',
+    secondaryBackground: isDark ? '#000000' : '#ffffff',
+    text: isDark ? '#ffffff' : '#000000',
+    inputBackground: isDark ? '#000000' : '#ffffff',
+    border: isDark ? '#ffffff' : '#000000',
+    deleteColor: isDark ? '#ffffff' : '#000000',
+  }
+
   return (
     <div
       style={{
@@ -22,15 +32,15 @@ function App() {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'flex-start',
-        backgroundColor: theme.background,
-        color: theme.text,
+        backgroundColor: colors.background,
+        color: colors.text,
         gap: '24px',
       }}
     >
       <img
         src="/favicon.svg"
         alt="KinoFatcherBot"
-        style={{ width: 'clamp(60px, 8vw, 100px)', height: 'clamp(60px, 8vw, 100px)', backgroundColor: theme.secondaryBackground, borderRadius: '50%' }}
+        style={{ width: 'clamp(60px, 8vw, 100px)', height: 'clamp(60px, 8vw, 100px)', backgroundColor: colors.secondaryBackground, borderRadius: '50%' }}
       />
       <div style={{ fontSize: 'clamp(18px, 4vw, 24px)', fontWeight: 600 }}>KinoFatcherBot</div>
       <input
@@ -48,9 +58,9 @@ function App() {
           maxWidth: 'min(400px, 90vw)',
           padding: '12px 16px',
           borderRadius: '8px',
-          border: `1px solid ${theme.border}`,
-          background: theme.inputBackground,
-          color: theme.text,
+          border: `1px solid ${colors.border}`,
+          background: colors.inputBackground,
+          color: colors.text,
           fontSize: 'clamp(14px, 2vw, 16px)',
         }}
       />
@@ -68,9 +78,9 @@ function App() {
             key={`${entry}-${index}`}
             style={{
               padding: '12px 16px',
-              background: theme.secondaryBackground,
+              background: colors.secondaryBackground,
               borderRadius: '8px',
-              border: `1px solid ${theme.border}`,
+              border: `1px solid ${colors.border}`,
               width: '100%',
               display: 'flex',
               justifyContent: 'space-between',
@@ -84,8 +94,8 @@ function App() {
               onClick={() => setEntries((prev) => prev.filter((_, i) => i !== index))}
               style={{
                 background: 'transparent',
-                color: theme.deleteColor,
-                border: `1px solid ${theme.deleteColor}`,
+                color: colors.deleteColor,
+                border: `1px solid ${colors.deleteColor}`,
                 borderRadius: '6px',
                 padding: '6px 10px',
                 cursor: 'pointer',
