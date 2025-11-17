@@ -1,14 +1,15 @@
 import { useState } from 'react'
 import { useTheme } from './hooks/useTheme'
 import { useTelegramWebApp } from './hooks/useTelegramWebApp'
-import { useSafeArea } from './hooks/useSafeArea'
+import { getSafeAreaTop } from './utils/global.utils'
 
 function App() {
+  useTelegramWebApp()
+  const theme = useTheme()
+  const safeAreaTop = getSafeAreaTop()
+
   const [value, setValue] = useState('')
   const [entries, setEntries] = useState<string[]>([])
-  const theme = useTheme()
-  const safeArea = useSafeArea()
-  useTelegramWebApp()
 
   const handleSubmit = () => {
     const trimmed = value.trim()
@@ -27,7 +28,7 @@ function App() {
         justifyContent: 'flex-start',
         backgroundColor: theme.background,
         color: theme.text,
-        padding: `${safeArea.top}px ${safeArea.right}px ${safeArea.bottom}px ${safeArea.left}px`,
+        marginTop: `${safeAreaTop}px`,
         gap: '24px',
       }}
     >
