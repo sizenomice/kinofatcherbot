@@ -1,4 +1,5 @@
 import './Payments.css'
+import { useState, useRef, useEffect } from 'react'
 import { useAppDispatch } from '../hooks/useAppDispatch'
 import { useAppSelector } from '../hooks/useAppSelector'
 import { purchaseSubscription } from '../store/slices/subscriptionSlice'
@@ -13,13 +14,15 @@ interface SubscriptionPlan {
 function Payments() {
   const dispatch = useAppDispatch()
   const subscription = useAppSelector((state) => state.subscription)
+  const [activeIndex, setActiveIndex] = useState(0)
+  const swiperRef = useRef<HTMLDivElement>(null)
 
   const plans: SubscriptionPlan[] = [
     { id: '1', months: 1, price: 299 },
     { id: '2', months: 3, price: 799, popular: true },
     { id: '3', months: 6, price: 1399 },
     { id: '4', months: 9, price: 1899 },
-    { id: '5', months: 12, price: 2299 },
+    { id: '5', months: 12, price: 2299, popular: true },
   ]
 
   const handleSubscribe = (plan: SubscriptionPlan) => {
@@ -49,20 +52,30 @@ function Payments() {
     return 'месяцев'
   }
 
+  useEffect(() => {
+    const swiper = swiperRef.current
+    if (!swiper) return
+
+    const handleScroll = () => {
+      const scrollLeft = swiper.scrollLeft
+      const containerWidth = swiper.clientWidth
+      const cardStep = containerWidth - 20
+      
+      const newIndex = Math.round(scrollLeft / cardStep)
+      const clampedIndex = Math.max(0, Math.min(newIndex, plans.length - 1))
+      setActiveIndex(clampedIndex)
+    }
+
+    handleScroll()
+
+    swiper.addEventListener('scroll', handleScroll, { passive: true })
+    return () => swiper.removeEventListener('scroll', handleScroll)
+  }, [plans.length])
+
   return (
     <div className="about-page">
       <div className="about-container">
-        <div className="about-header">
-          <div className="app-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
-            </svg>
-          </div>
-          <h1 className="about-title">Подписка</h1>
-          <p className="about-subtitle">Выберите подходящий план</p>
-        </div>
-
-        {subscription.endDate && (
+        {subscription.endDate ? (
           <div className="active-subscription">
             <div className="active-subscription-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -79,40 +92,96 @@ function Payments() {
               </p>
             </div>
           </div>
+        ) : (
+          <div className="promo-subscription">
+            <div className="promo-subscription-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
+              </svg>
+            </div>
+            <h2 className="promo-subscription-title">Получите полный доступ</h2>
+            <p className="promo-subscription-subtitle">Откройте все возможности приложения</p>
+            <div className="promo-benefits">
+              <div className="promo-benefit">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M5 13l4 4L19 7" />
+                </svg>
+                <span>Безлимитный доступ</span>
+              </div>
+              <div className="promo-benefit">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M5 13l4 4L19 7" />
+                </svg>
+                <span>Все функции</span>
+              </div>
+              <div className="promo-benefit">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M5 13l4 4L19 7" />
+                </svg>
+                <span>Без рекламы</span>
+              </div>
+            </div>
+            <div className="promo-cta">
+              <p className="promo-cta-text">Выберите план ниже и начните прямо сейчас!</p>
+            </div>
+          </div>
         )}
 
-        <div className="subscription-plans">
-          {plans.map((plan) => (
-            <div
-              key={plan.id}
-              className={`subscription-card ${plan.popular ? 'popular' : ''}`}
-            >
-              {plan.popular && (
-                <div className="popular-badge">Популярный</div>
-              )}
-              <div className="subscription-header">
-                <h3 className="subscription-months">
-                  {plan.months} {getMonthLabel(plan.months)}
-                </h3>
-                <div className="subscription-price">
-                  <span className="price-amount">{formatPrice(plan.price)}</span>
-                  <span className="price-currency">₽</span>
-                </div>
-                <p className="subscription-monthly">
-                  {formatPrice(getMonthlyPrice(plan.price, plan.months))}₽ в месяц
-                </p>
-              </div>
-              <button
-                className="subscribe-button"
-                onClick={() => handleSubscribe(plan)}
+        <div className="swiper-container">
+          <div className="subscription-plans" ref={swiperRef}>
+            {plans.map((plan) => (
+              <div
+                key={plan.id}
+                className={`subscription-card ${plan.popular ? 'popular' : ''}`}
               >
-                <svg className="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M5 12h14M12 5l7 7-7 7" />
-                </svg>
-                Подписаться
-              </button>
-            </div>
-          ))}
+                {plan.popular && (
+                  <div className="popular-badge">Популярный</div>
+                )}
+                <div className="subscription-header">
+                  <h3 className="subscription-months">
+                    {plan.months} {getMonthLabel(plan.months)}
+                  </h3>
+                  <div className="subscription-price">
+                    <span className="price-amount">{formatPrice(plan.price)}</span>
+                    <span className="price-currency">₽</span>
+                  </div>
+                  <p className="subscription-monthly">
+                    {formatPrice(getMonthlyPrice(plan.price, plan.months))}₽ в месяц
+                  </p>
+                </div>
+                <button
+                  className="subscribe-button"
+                  onClick={() => handleSubscribe(plan)}
+                >
+                  <svg className="button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                  Подписаться
+                </button>
+              </div>
+            ))}
+          </div>
+          <div className="swiper-pagination">
+            {plans.map((_, index) => (
+              <button
+                key={index}
+                className={`swiper-pagination-bullet ${index === activeIndex ? 'active' : ''}`}
+                onClick={() => {
+                  const swiper = swiperRef.current
+                  if (swiper) {
+                    const containerWidth = swiper.clientWidth
+                    const cardStep = containerWidth - 20
+                    const scrollPosition = index * cardStep
+                    swiper.scrollTo({
+                      left: scrollPosition,
+                      behavior: 'smooth'
+                    })
+                  }
+                }}
+                aria-label={`Перейти к слайду ${index + 1}`}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>
