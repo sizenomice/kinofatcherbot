@@ -30,7 +30,8 @@ body::before {
 }
 
 .app-container {
-  min-height: 100vh;
+  height: 100vh;
+  max-height: 100vh;
   display: flex;
   flex-direction: column;
   padding-bottom: 80px;
@@ -38,6 +39,7 @@ body::before {
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   background-color: #f3f4f6;
+  box-sizing: border-box;
 }
 
 .main-content {
