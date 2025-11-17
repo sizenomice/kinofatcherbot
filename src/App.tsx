@@ -30,8 +30,7 @@ function App() {
         justifyContent: 'flex-start',
         backgroundColor: theme.background,
         color: theme.text,
-        padding: `20px`,
-        paddingTop: `${safeAreaTop}px`,
+        padding: `20px ${safeAreaTop}px 20px 20px`,
         gap: '24px',
       }}
     >
