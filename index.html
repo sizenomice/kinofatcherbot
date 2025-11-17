@@ -10,6 +10,11 @@
       window.Telegram?.WebApp.ready()
       window.Telegram?.WebApp?.expand()
       window.Telegram?.WebApp?.disableVerticalSwipes()
+      // Отключаем скролл в Telegram WebView
+      if (window.Telegram?.WebApp) {
+        document.body.style.overflow = 'hidden'
+        document.documentElement.style.overflow = 'hidden'
+      }
       if (['android', 'ios'].includes(window.Telegram?.WebApp?.platform)) {
         window.Telegram?.WebApp?.requestFullscreen?.()
       }
