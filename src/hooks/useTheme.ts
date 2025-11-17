@@ -11,20 +11,20 @@ export type Theme = {
 
 const darkTheme: Theme = {
   background: '#000000',
-  secondaryBackground: '#1c1c1c',
+  secondaryBackground: '#000000',
   text: '#ffffff',
-  inputBackground: '#111111',
-  border: '#555555',
-  deleteColor: '#f55',
+  inputBackground: '#000000',
+  border: '#ffffff',
+  deleteColor: '#ffffff',
 }
 
 const lightTheme: Theme = {
-  background: '#f4f4f4',
+  background: '#ffffff',
   secondaryBackground: '#ffffff',
-  text: '#111111',
+  text: '#000000',
   inputBackground: '#ffffff',
-  border: '#cccccc',
-  deleteColor: '#d22',
+  border: '#000000',
+  deleteColor: '#000000',
 }
 
 const resolveTheme = (): Theme => {
