@@ -19,7 +19,7 @@ function App() {
   }
 
   console.log(safeAreaTop)
-  
+
   return (
     <div
       style={{
@@ -30,7 +30,8 @@ function App() {
         justifyContent: 'flex-start',
         backgroundColor: theme.background,
         color: theme.text,
-        marginTop: `${safeAreaTop}px`,
+        padding: `20px`,
+        paddingTop: `${safeAreaTop}px`,
         gap: '24px',
       }}
     >
