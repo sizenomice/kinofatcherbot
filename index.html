@@ -17,6 +17,43 @@
   </head>
   <body style="margin: 0; padding: calc(env(content-safe-area-inset-top, 0px) + env(safe-area-inset-top, 0px)) calc(env(content-safe-area-inset-right, 0px) + env(safe-area-inset-right, 0px)) calc(env(content-safe-area-inset-bottom, 0px) + env(safe-area-inset-bottom, 0px)) calc(env(content-safe-area-inset-left, 0px) + env(safe-area-inset-left, 0px));">
     <div id="root"></div>
+    <script>
+      (function() {
+        const getEnvValue = (name) => {
+          const testEl = document.createElement('div');
+          testEl.style.position = 'absolute';
+          testEl.style.visibility = 'hidden';
+          testEl.style.padding = `env(${name}, 0px)`;
+          document.body.appendChild(testEl);
+          const value = getComputedStyle(testEl).paddingTop;
+          document.body.removeChild(testEl);
+          return value;
+        };
+
+        const getSum = (contentName, safeName) => {
+          const contentValue = getEnvValue(contentName);
+          const safeValue = getEnvValue(safeName);
+          const contentNum = parseFloat(contentValue) || 0;
+          const safeNum = parseFloat(safeValue) || 0;
+          return {
+            content: contentValue,
+            safe: safeValue,
+            sum: contentNum + safeNum
+          };
+        };
+
+        const top = getSum('content-safe-area-inset-top', 'safe-area-inset-top');
+        const right = getSum('content-safe-area-inset-right', 'safe-area-inset-right');
+        const bottom = getSum('content-safe-area-inset-bottom', 'safe-area-inset-bottom');
+        const left = getSum('content-safe-area-inset-left', 'safe-area-inset-left');
+
+        console.log('Safe Area Insets:');
+        console.log('Top:', top.sum + 'px (content: ' + top.content + ' + safe: ' + top.safe + ')');
+        console.log('Right:', right.sum + 'px (content: ' + right.content + ' + safe: ' + right.safe + ')');
+        console.log('Bottom:', bottom.sum + 'px (content: ' + bottom.content + ' + safe: ' + bottom.safe + ')');
+        console.log('Left:', left.sum + 'px (content: ' + left.content + ' + safe: ' + left.safe + ')');
+      })();
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
