@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { useTheme } from './hooks/useTheme'
 import { useTelegramWebApp } from './hooks/useTelegramWebApp'
-import { getSafeAreaTop } from './utils/global.utils'
+import { useSafeAreaTop } from './hooks/useSafeAreaTop'
 
 function App() {
   useTelegramWebApp()
   const theme = useTheme()
-  const safeAreaTop = getSafeAreaTop()
+  const safeAreaTop = useSafeAreaTop()
 
   const [value, setValue] = useState('')
   const [entries, setEntries] = useState<string[]>([])
@@ -17,7 +17,9 @@ function App() {
     setEntries((prev) => [...prev, trimmed])
     setValue('')
   }
+
   console.log(safeAreaTop)
+  
   return (
     <div
       style={{
