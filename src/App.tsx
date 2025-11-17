@@ -30,9 +30,9 @@ function App() {
       <img
         src="/favicon.svg"
         alt="KinoFatcherBot"
-        style={{ width: '100px', height: '100px', backgroundColor: theme.secondaryBackground, borderRadius: '50%' }}
+        style={{ width: 'clamp(60px, 8vw, 100px)', height: 'clamp(60px, 8vw, 100px)', backgroundColor: theme.secondaryBackground, borderRadius: '50%' }}
       />
-      <div style={{ fontSize: '24px', fontWeight: 600 }}>KinoFatcherBot</div>
+      <div style={{ fontSize: 'clamp(18px, 4vw, 24px)', fontWeight: 600 }}>KinoFatcherBot</div>
       <input
         value={value}
         onChange={(event) => setValue(event.target.value)}
@@ -44,20 +44,20 @@ function App() {
         }}
         placeholder="Введите сообщение"
         style={{
-          width: '100%',
-          maxWidth: '400px',
+          width: '90%',
+          maxWidth: 'min(400px, 90vw)',
           padding: '12px 16px',
           borderRadius: '8px',
           border: `1px solid ${theme.border}`,
           background: theme.inputBackground,
           color: theme.text,
-          fontSize: '16px',
+          fontSize: 'clamp(14px, 2vw, 16px)',
         }}
       />
       <div
         style={{
-          width: '100%',
-          maxWidth: '400px',
+          width: '90%',
+          maxWidth: 'min(400px, 90vw)',
           display: 'flex',
           flexDirection: 'column',
           gap: '12px',
