@@ -50,7 +50,6 @@ body.loaded::before {
   overflow: hidden;
   background-color: #f3f4f6;
   box-sizing: border-box;
-  padding-top: calc(var(--tg-content-safe-area-inset-top, 0px) + var(--tg-safe-area-inset-top, 0px));
 }
 
 .main-content {
