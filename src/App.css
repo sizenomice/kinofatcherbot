@@ -32,6 +32,12 @@ body::before {
   background-size: auto 45%, auto;
   background-repeat: no-repeat, no-repeat;
   z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+body.loaded::before {
+  opacity: 1;
 }
 
 .app-container {
@@ -65,7 +71,7 @@ body.dark {
   color: #e5e7eb;
 }
 
-body.dark::before {
+body.dark.loaded::before {
   background-image: 
     url('/favicon.svg'),
     linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);

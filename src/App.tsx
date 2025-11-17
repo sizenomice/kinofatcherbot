@@ -16,8 +16,13 @@ function App() {
   const MIN_LOADING_TIME = 2700
 
   useEffect(() => {
-    document.body.className = theme
-  }, [theme])
+    // Устанавливаем тему и статус загрузки одновременно
+    const classes = [theme]
+    if (!isInitialLoad) {
+      classes.push('loaded')
+    }
+    document.body.className = classes.join(' ')
+  }, [theme, isInitialLoad])
 
   useEffect(() => {
     if (!isLoading && isInitialLoad) {
