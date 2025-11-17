@@ -17,7 +17,7 @@ function App() {
 
   useEffect(() => {
     // Устанавливаем тему и статус загрузки одновременно
-    const classes = [theme]
+    const classes: string[] = [theme]
     if (!isInitialLoad) {
       classes.push('loaded')
       // Удаляем inline стиль из head после загрузки
