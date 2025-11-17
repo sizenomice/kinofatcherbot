@@ -17,7 +17,7 @@ function App() {
     setEntries((prev) => [...prev, trimmed])
     setValue('')
   }
-
+  console.log(safeAreaTop)
   return (
     <div
       style={{
