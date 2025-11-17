@@ -51,6 +51,7 @@
   height: 100%;
   object-fit: contain;
   animation: pulse 2s ease-in-out infinite;
+  transform-origin: center;
 }
 
 @keyframes pulse {

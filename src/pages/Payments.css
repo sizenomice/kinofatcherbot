@@ -1,0 +1,307 @@
+.about-page {
+  width: 100%;
+  min-height: calc(100vh - 80px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.about-container {
+  max-width: 600px;
+  width: 100%;
+}
+
+.about-header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.app-icon {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 24px;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 8px 16px rgba(99, 102, 241, 0.3);
+}
+
+.app-icon svg {
+  width: 48px;
+  height: 48px;
+}
+
+.about-title {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: #111827;
+}
+
+.about-subtitle {
+  font-size: 18px;
+  color: #6b7280;
+  font-weight: 400;
+}
+
+.active-subscription {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 32px;
+  color: white;
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+}
+
+.active-subscription-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 16px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.active-subscription-icon svg {
+  width: 32px;
+  height: 32px;
+  color: white;
+}
+
+.active-subscription-title {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: white;
+}
+
+.active-subscription-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.active-subscription-plan {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  color: white;
+}
+
+.active-subscription-date {
+  font-size: 16px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.active-subscription-date strong {
+  font-weight: 700;
+  color: white;
+}
+
+.subscription-plans {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.subscription-card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  position: relative;
+  border: 2px solid transparent;
+}
+
+.subscription-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+}
+
+.subscription-card.popular {
+  border-color: #6366f1;
+  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.2);
+}
+
+.popular-badge {
+  position: absolute;
+  top: -12px;
+  right: 24px;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: white;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3);
+}
+
+.subscription-header {
+  margin-bottom: 24px;
+}
+
+.subscription-months {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #111827;
+}
+
+.subscription-price {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.price-amount {
+  font-size: 36px;
+  font-weight: 700;
+  color: #6366f1;
+  line-height: 1;
+}
+
+.price-currency {
+  font-size: 24px;
+  font-weight: 600;
+  color: #6366f1;
+}
+
+.subscription-monthly {
+  font-size: 14px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.subscribe-button {
+  width: 100%;
+  padding: 14px 24px;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.subscribe-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+}
+
+.subscribe-button:active {
+  transform: translateY(0);
+}
+
+.button-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.dark .about-title {
+  color: #e5e7eb;
+}
+
+.dark .about-subtitle {
+  color: #9ca3af;
+}
+
+.dark .subscription-card {
+  background: #1f2937;
+}
+
+.dark .subscription-card.popular {
+  border-color: #6366f1;
+}
+
+.dark .subscription-months {
+  color: #e5e7eb;
+}
+
+.dark .subscription-monthly {
+  color: #9ca3af;
+}
+
+@media (max-width: 640px) {
+  .active-subscription {
+    padding: 20px;
+  }
+
+  .active-subscription-icon {
+    width: 56px;
+    height: 56px;
+  }
+
+  .active-subscription-icon svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .active-subscription-title {
+    font-size: 20px;
+  }
+
+  .active-subscription-plan {
+    font-size: 16px;
+  }
+
+  .active-subscription-date {
+    font-size: 14px;
+  }
+
+  .about-title {
+    font-size: 28px;
+  }
+
+  .about-subtitle {
+    font-size: 16px;
+  }
+
+  .app-icon {
+    width: 64px;
+    height: 64px;
+  }
+
+  .app-icon svg {
+    width: 36px;
+    height: 36px;
+  }
+
+  .subscription-card {
+    padding: 20px;
+  }
+
+  .subscription-months {
+    font-size: 20px;
+  }
+
+  .price-amount {
+    font-size: 32px;
+  }
+
+  .price-currency {
+    font-size: 20px;
+  }
+
+  .popular-badge {
+    right: 20px;
+    font-size: 11px;
+    padding: 5px 12px;
+  }
+}

@@ -16,13 +16,13 @@ function BottomNavigation() {
         <span className="nav-label">Поиск</span>
       </Link>
       <Link 
-        to="/about" 
-        className={`nav-item ${location.pathname === '/about' ? 'active' : ''}`}
+        to="/payments" 
+        className={`nav-item ${location.pathname === '/payments' ? 'active' : ''}`}
       >
         <svg className="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          <path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
         </svg>
-        <span className="nav-label">О приложении</span>
+        <span className="nav-label">Подписка</span>
       </Link>
     </nav>
   )

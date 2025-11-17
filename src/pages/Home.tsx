@@ -31,8 +31,14 @@ function Home() {
     { skip: !!debouncedSearchQuery.trim() }
   )
 
-  const currentData = debouncedSearchQuery.trim() ? searchData : moviesData
-  const isLoading = debouncedSearchQuery.trim() ? isSearching : isLoadingMovies
+  // Используем searchData только если есть debouncedSearchQuery
+  // Если есть searchQuery, но еще нет debouncedSearchQuery - не показываем moviesData
+  const currentData = debouncedSearchQuery.trim() 
+    ? searchData 
+    : (searchQuery.trim() ? null : moviesData)
+  const isLoading = debouncedSearchQuery.trim() 
+    ? isSearching 
+    : (searchQuery.trim() ? false : isLoadingMovies)
   const error = debouncedSearchQuery.trim() ? searchError : moviesError
 
   useEffect(() => {
@@ -40,6 +46,14 @@ function Home() {
     setAllMovies([])
     setHasMore(true)
   }, [debouncedSearchQuery])
+
+  // Очищаем список сразу при начале ввода, до debounce
+  useEffect(() => {
+    if (searchQuery.trim() && !debouncedSearchQuery.trim()) {
+      setAllMovies([])
+      setHasMore(true)
+    }
+  }, [searchQuery, debouncedSearchQuery])
 
   useEffect(() => {
     if (currentData?.docs && currentData.docs.length > 0) {
@@ -130,15 +144,17 @@ function Home() {
         </div>
       )}
 
-      {page === 1 && isLoading && (
+      {(page === 1 && isLoading) || (searchQuery.trim() && !debouncedSearchQuery.trim()) ? (
         <div className="loading-container">
-          <img 
-            src="/favicon.svg" 
-            alt="Loading" 
-            className="loading-icon"
-          />
+          <div className="loading-icon-wrapper">
+            <img 
+              src="/favicon.svg" 
+              alt="Loading" 
+              className="loading-icon"
+            />
+          </div>
         </div>
-      )}
+      ) : null}
 
       {allMovies.length > 0 && (
         <>
@@ -170,11 +186,13 @@ function Home() {
           
           {isLoading && page > 1 && (
             <div className="loading-container" style={{ padding: '24px' }}>
-              <img 
-                src="/favicon.svg" 
-                alt="Loading" 
-                className="loading-icon"
-              />
+              <div className="loading-icon-wrapper">
+                <img 
+                  src="/favicon.svg" 
+                  alt="Loading" 
+                  className="loading-icon"
+                />
+              </div>
             </div>
           )}
           
@@ -190,11 +208,13 @@ function Home() {
                 justifyContent: 'center'
               }}
             >
-              <img 
-                src="/favicon.svg" 
-                alt="Loading" 
-                className="loading-icon-small"
-              />
+              <div className="loading-icon-wrapper-small">
+                <img 
+                  src="/favicon.svg" 
+                  alt="Loading" 
+                  className="loading-icon-small"
+                />
+              </div>
             </div>
           )}
           
@@ -218,16 +238,6 @@ function Home() {
           </svg>
           <p>Фильмы не найдены</p>
           <p className="empty-subtitle">Попробуйте изменить запрос</p>
-        </div>
-      )}
-
-      {!debouncedSearchQuery && !isLoading && allMovies.length === 0 && (
-        <div className="empty-state">
-          <svg className="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          <p>Начните поиск фильмов</p>
-          <p className="empty-subtitle">Введите название фильма в поле поиска</p>
         </div>
       )}
     </div>

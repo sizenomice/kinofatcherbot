@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
-import About from './pages/About'
+import Payments from './pages/Payments'
 import BottomNavigation from './components/BottomNavigation'
 import LoadingScreen from './components/LoadingScreen'
 import { useTheme } from './hooks/useTheme'
@@ -33,14 +33,19 @@ function App() {
   }, [isLoading, isInitialLoad])
 
   return (
-    <BrowserRouter>
+    <BrowserRouter
+      future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true,
+      }}
+    >
       {isInitialLoad && <LoadingScreen />}
       {!isInitialLoad && (
         <div className={`app-container ${theme}`}>
           <main className="main-content">
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/about" element={<About />} />
+              <Route path="/payments" element={<Payments />} />
             </Routes>
           </main>
           <BottomNavigation />
