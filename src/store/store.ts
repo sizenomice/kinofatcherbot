@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit'
-import exampleReducer from './slices/exampleSlice'
+import { poiskkino } from './slices/poiskkinoSlice'
 
 export const store = configureStore({
   reducer: {
-    example: exampleReducer,
+    [poiskkino.reducerPath]: poiskkino.reducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(poiskkino.middleware),
 })
 
 export type RootState = ReturnType<typeof store.getState>
