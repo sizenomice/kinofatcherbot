@@ -86,10 +86,6 @@ function Home() {
     }
   }, [handleObserver, hasMore])
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
-  }
-
   const handleClear = () => {
     setSearchQuery('')
     setPage(1)
@@ -99,7 +95,7 @@ function Home() {
     <div className="home-page">
       <div className="search-container">
         <h1 className="page-title">Поиск фильмов</h1>
-        <form onSubmit={handleSearch} className="search-form">
+        <div className="search-form">
           <div className="search-input-wrapper">
             <svg className="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -123,10 +119,7 @@ function Home() {
               </button>
             )}
           </div>
-          <button type="submit" className="search-button" disabled={isLoading}>
-            {isLoading ? 'Поиск...' : 'Найти'}
-          </button>
-        </form>
+        </div>
       </div>
 
       {error && (
@@ -139,8 +132,11 @@ function Home() {
 
       {page === 1 && isLoading && (
         <div className="loading-container">
-          <div className="spinner"></div>
-          <p>{debouncedSearchQuery ? 'Поиск фильмов...' : 'Загрузка фильмов...'}</p>
+          <img 
+            src="/favicon.svg" 
+            alt="Loading" 
+            className="loading-icon"
+          />
         </div>
       )}
 
@@ -174,8 +170,11 @@ function Home() {
           
           {isLoading && page > 1 && (
             <div className="loading-container" style={{ padding: '24px' }}>
-              <div className="spinner"></div>
-              <p>Загрузка еще фильмов...</p>
+              <img 
+                src="/favicon.svg" 
+                alt="Loading" 
+                className="loading-icon"
+              />
             </div>
           )}
           
@@ -191,9 +190,11 @@ function Home() {
                 justifyContent: 'center'
               }}
             >
-              <div style={{ fontSize: '14px', color: '#6b7280' }}>
-                Загрузка...
-              </div>
+              <img 
+                src="/favicon.svg" 
+                alt="Loading" 
+                className="loading-icon-small"
+              />
             </div>
           )}
           
