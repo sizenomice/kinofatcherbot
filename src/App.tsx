@@ -11,14 +11,13 @@ function App() {
         minHeight: '100vh',
         display: 'flex',
         flexDirection: 'column',
-        gap: '12px',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#0f0f10',
+        backgroundColor: '#000000',
         color: '#fff',
       }}
     >
-      <img src="/favicon.svg" alt="KinoFetcherBot" style={{ width: '100px', height: '100px' }} />
+      <img src="/favicon.svg" alt="KinoFatcherBot" style={{ width: '100px', height: '100px', backgroundColor: '#fff', borderRadius: '50%' }} />
       <div style={{ fontSize: '24px', fontWeight: 600 }}>KinoFetcherBot</div>
     </div>
   )
