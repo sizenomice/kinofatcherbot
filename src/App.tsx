@@ -1,59 +1,14 @@
-import { useEffect, useState } from 'react'
-
-type Theme = {
-  background: string
-  secondaryBackground: string
-  text: string
-  inputBackground: string
-  border: string
-  deleteColor: string
-}
-
-const darkTheme: Theme = {
-  background: '#000000',
-  secondaryBackground: '#1c1c1c',
-  text: '#ffffff',
-  inputBackground: '#111111',
-  border: '#555555',
-  deleteColor: '#f55',
-}
-
-const lightTheme: Theme = {
-  background: '#f4f4f4',
-  secondaryBackground: '#ffffff',
-  text: '#111111',
-  inputBackground: '#ffffff',
-  border: '#cccccc',
-  deleteColor: '#d22',
-}
-
-const resolveTheme = (): Theme => {
-  if (typeof window === 'undefined') {
-    return darkTheme
-  }
-
-  const webApp = window.Telegram?.WebApp
-  const params = webApp?.themeParams
-
-  if (params) {
-    return {
-      background: params.bg_color ?? darkTheme.background,
-      secondaryBackground: params.secondary_bg_color ?? darkTheme.secondaryBackground,
-      text: params.text_color ?? darkTheme.text,
-      inputBackground: params.secondary_bg_color ?? darkTheme.inputBackground,
-      border: params.hint_color ?? darkTheme.border,
-      deleteColor: params.button_color ?? darkTheme.deleteColor,
-    }
-  }
-
-  const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches
-  return prefersDark ? darkTheme : lightTheme
-}
+import { useState } from 'react'
+import { useTheme } from './hooks/useTheme'
+import { useTelegramWebApp } from './hooks/useTelegramWebApp'
+import { useSafeArea } from './hooks/useSafeArea'
 
 function App() {
   const [value, setValue] = useState('')
   const [entries, setEntries] = useState<string[]>([])
-  const [theme, setTheme] = useState<Theme>(() => resolveTheme())
+  const theme = useTheme()
+  const safeArea = useSafeArea()
+  useTelegramWebApp()
 
   const handleSubmit = () => {
     const trimmed = value.trim()
@@ -61,27 +16,6 @@ function App() {
     setEntries((prev) => [...prev, trimmed])
     setValue('')
   }
-
-  window.Telegram?.WebApp.ready()
-  window.Telegram?.WebApp?.expand()
-  window.Telegram?.WebApp?.disableVerticalSwipes()
-  if (['android', 'ios'].includes(window.Telegram?.WebApp?.platform)) {
-    window.Telegram?.WebApp?.requestFullscreen?.()
-  }
-
-  useEffect(() => {
-    const handleThemeChange = () => setTheme(resolveTheme())
-    const webApp = window.Telegram?.WebApp
-    const mediaQuery = window.matchMedia?.('(prefers-color-scheme: dark)')
-
-    webApp?.onEvent?.('themeChanged', handleThemeChange)
-    mediaQuery?.addEventListener?.('change', handleThemeChange)
-
-    return () => {
-      webApp?.offEvent?.('themeChanged', handleThemeChange)
-      mediaQuery?.removeEventListener?.('change', handleThemeChange)
-    }
-  }, [])
 
   return (
     <div
@@ -93,7 +27,7 @@ function App() {
         justifyContent: 'flex-start',
         backgroundColor: theme.background,
         color: theme.text,
-        padding: '40px 20px',
+        padding: `${safeArea.top}px ${safeArea.right}px ${safeArea.bottom}px ${safeArea.left}px`,
         gap: '24px',
       }}
     >
