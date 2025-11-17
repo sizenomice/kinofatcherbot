@@ -40,4 +40,3 @@ const subscriptionSlice = createSlice({
 
 export const { purchaseSubscription, clearSubscription } = subscriptionSlice.actions
 export default subscriptionSlice.reducer
-

@@ -20,4 +20,3 @@ function LoadingScreen() {
 }
 
 export default LoadingScreen
-

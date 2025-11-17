@@ -194,4 +194,3 @@ export const {
   useGetListsQuery,
   useGetListBySlugQuery,
 } = poiskkino;
-

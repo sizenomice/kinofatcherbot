@@ -39,4 +39,3 @@ export const useMovies = () => {
     refetchRandom: randomMovieQuery.refetch,
   };
 };
-
