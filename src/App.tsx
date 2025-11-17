@@ -24,7 +24,6 @@ function App() {
         justifyContent: 'flex-start',
         backgroundColor: theme.background,
         color: theme.text,
-        padding: `20px`,
         gap: '24px',
       }}
     >
