@@ -1,5 +1,7 @@
 import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import type { Movie } from '../store/slices/poiskkinoSlice'
+import { useAppSelector } from '../hooks/useAppSelector'
 import './MoviePopup.css'
 
 interface MoviePopupProps {
@@ -8,6 +10,9 @@ interface MoviePopupProps {
 }
 
 function MoviePopup({ movie, onClose }: MoviePopupProps) {
+  const navigate = useNavigate()
+  const subscription = useAppSelector((state) => state.subscription)
+
   useEffect(() => {
     if (movie) {
       document.body.style.overflow = 'hidden'
@@ -19,6 +24,23 @@ function MoviePopup({ movie, onClose }: MoviePopupProps) {
       document.body.style.overflow = ''
     }
   }, [movie])
+
+  const hasActiveSubscription = () => {
+    if (!subscription.endDate) return false
+    const endDate = new Date(subscription.endDate)
+    return endDate > new Date()
+  }
+
+  const handleWatch = () => {
+    if (hasActiveSubscription()) {
+      // Здесь можно добавить логику для просмотра фильма
+      // Например, открыть видео плеер или перейти на страницу просмотра
+      alert('Начинаем просмотр фильма!')
+    } else {
+      navigate('/payments')
+      onClose()
+    }
+  }
 
   if (!movie) return null
 
@@ -91,6 +113,13 @@ function MoviePopup({ movie, onClose }: MoviePopupProps) {
                 <p>{movie.description}</p>
               </div>
             )}
+            
+            <button className="popup-watch-button" onClick={handleWatch}>
+              <svg className="watch-button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+              Смотреть
+            </button>
           </div>
         </div>
       </div>
