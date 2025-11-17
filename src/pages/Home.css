@@ -1,7 +1,8 @@
 .home-page {
   width: 100%;
-  min-height: calc(100vh - 80px);
+  min-height: 100%;
   padding: 20px;
+  box-sizing: border-box;
 }
 
 .search-container {

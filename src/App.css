@@ -47,18 +47,10 @@ body.loaded::before {
   max-height: 100vh;
   display: flex;
   flex-direction: column;
-  padding-bottom: 240px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  -webkit-overflow-scrolling: touch;
+  overflow: hidden;
   background-color: #f3f4f6;
   box-sizing: border-box;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.app-container::-webkit-scrollbar {
-  display: none;
+  padding-top: calc(var(--tg-content-safe-area-inset-top, 0px) + var(--tg-safe-area-inset-top, 0px));
 }
 
 .main-content {
@@ -66,6 +58,16 @@ body.loaded::before {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding-bottom: calc(80px + max(8px, env(safe-area-inset-bottom, 0px)));
+}
+
+.main-content::-webkit-scrollbar {
+  display: none;
 }
 
 .app-container.dark {
