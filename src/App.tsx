@@ -14,7 +14,6 @@ function App() {
   window.Telegram?.WebApp.ready()
   window.Telegram?.WebApp?.expand()
   window.Telegram?.WebApp?.disableVerticalSwipes()
-  window.Telegram?.WebApp?.disableHorizontalSwipes()
   if (['android', 'ios'].includes(window.Telegram?.WebApp?.platform)) {
     window.Telegram?.WebApp?.requestFullscreen?.()
   }
