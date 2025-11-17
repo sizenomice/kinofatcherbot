@@ -41,11 +41,8 @@ function Home() {
     { skip: !!debouncedSearchQuery.trim() }
   )
 
-  // Проверяем, идет ли активный ввод (searchQuery отличается от debouncedSearchQuery)
   const isTyping = searchQuery.trim() !== debouncedSearchQuery.trim()
   
-  // Используем searchData только если есть debouncedSearchQuery
-  // Если есть searchQuery, но еще нет debouncedSearchQuery - не показываем moviesData
   const currentData = debouncedSearchQuery.trim() 
     ? searchData 
     : (searchQuery.trim() ? null : moviesData)
@@ -54,14 +51,12 @@ function Home() {
     : (searchQuery.trim() ? false : isLoadingMovies)
   const error = debouncedSearchQuery.trim() ? searchError : moviesError
   
-  // Показываем loading если идет загрузка ИЛИ активный ввод
   const showLoading = isLoading || isTyping
 
   useEffect(() => {
     dispatch(resetPagination())
   }, [debouncedSearchQuery, dispatch])
 
-  // Очищаем список сразу при начале ввода, до debounce
   useEffect(() => {
     if (searchQuery.trim() && !debouncedSearchQuery.trim()) {
       dispatch(setAllMovies([]))
@@ -118,7 +113,6 @@ function Home() {
   return (
     <div className="home-page">
       <div className="search-container">
-        <h1 className="page-title">Поиск фильмов</h1>
         <div className="search-form">
           <div className="search-input-wrapper">
             <svg className="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

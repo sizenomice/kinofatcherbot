@@ -7,14 +7,6 @@
   margin-bottom: 32px;
 }
 
-.page-title {
-  font-size: 32px;
-  font-weight: 700;
-  margin-bottom: 24px;
-  color: #111827;
-  text-align: center;
-}
-
 .search-form {
   display: flex;
   flex-direction: row;
