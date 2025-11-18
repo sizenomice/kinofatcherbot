@@ -36,12 +36,6 @@ const searchSlice = createSlice({
     setHasMore: (state, action: { payload: boolean }) => {
       state.hasMore = action.payload
     },
-    resetSearch: (state) => {
-      state.searchQuery = ''
-      state.page = 1
-      state.allMovies = []
-      state.hasMore = true
-    },
     resetPagination: (state) => {
       state.page = 1
       state.allMovies = []
@@ -56,7 +50,6 @@ export const {
   setAllMovies,
   appendMovies,
   setHasMore,
-  resetSearch,
   resetPagination,
 } = searchSlice.actions
 

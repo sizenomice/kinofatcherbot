@@ -60,16 +60,20 @@ export const poiskkino = createApi({
     },
   }),
   tagTypes: ['Movies'],
+  // Кэширование данных на 5 минут для улучшения производительности
+  keepUnusedDataFor: 300,
   endpoints: (builder) => ({
     getMovies: builder.query<MoviesResponse, MoviesParams | void>({
       query: (params = {}) => ({
         url: '/v1.4/movie',
         params: {
-          limit: 10,
+          limit: 20,
           ...params,
         },
       }),
       providesTags: ['Movies'],
+      // Кэширование на уровне эндпоинта
+      keepUnusedDataFor: 300,
     }),
 
     searchMovies: builder.query<MoviesResponse, SearchParams>({
@@ -82,6 +86,8 @@ export const poiskkino = createApi({
         },
       }),
       providesTags: ['Movies'],
+      // Кэширование результатов поиска на 2 минуты
+      keepUnusedDataFor: 120,
     }),
 
     getMovieById: builder.query<Movie, number>({
@@ -92,87 +98,6 @@ export const poiskkino = createApi({
       query: () => '/v1.4/movie/random',
     }),
 
-    getSeasons: builder.query<any, { movieId?: number; [key: string]: any }>({
-      query: (params = {}) => ({
-        url: '/v1.4/season',
-        params,
-      }),
-    }),
-
-    getMovieAwards: builder.query<any, { movieId?: number; [key: string]: any }>({
-      query: (params = {}) => ({
-        url: '/v1.4/movie/awards',
-        params,
-      }),
-    }),
-
-    getPossibleValues: builder.query<any, { field: string }>({
-      query: (params) => ({
-        url: '/v1/movie/possible-values-by-field',
-        params,
-      }),
-    }),
-
-    getPersonById: builder.query<any, number>({
-      query: (id) => `/v1.4/person/${id}`,
-    }),
-
-    getPersons: builder.query<any, { [key: string]: any }>({
-      query: (params = {}) => ({
-        url: '/v1.4/person',
-        params,
-      }),
-    }),
-
-    searchPersons: builder.query<any, { query: string; limit?: number; page?: number }>({
-      query: (params) => ({
-        url: '/v1.4/person/search',
-        params: {
-          query: params.query,
-          limit: params.limit || 20,
-          page: params.page || 1,
-        },
-      }),
-    }),
-
-    getReviews: builder.query<any, { [key: string]: any }>({
-      query: (params = {}) => ({
-        url: '/v1.4/review',
-        params,
-      }),
-    }),
-
-    getStudios: builder.query<any, { [key: string]: any }>({
-      query: (params = {}) => ({
-        url: '/v1.4/studio',
-        params,
-      }),
-    }),
-
-    getKeywords: builder.query<any, { [key: string]: any }>({
-      query: (params = {}) => ({
-        url: '/v1.4/keyword',
-        params,
-      }),
-    }),
-
-    getImages: builder.query<any, { [key: string]: any }>({
-      query: (params = {}) => ({
-        url: '/v1.4/image',
-        params,
-      }),
-    }),
-
-    getLists: builder.query<any, { [key: string]: any }>({
-      query: (params = {}) => ({
-        url: '/v1.4/list',
-        params,
-      }),
-    }),
-
-    getListBySlug: builder.query<any, string>({
-      query: (slug) => `/v1.4/list/${slug}`,
-    }),
   }),
 });
 
@@ -181,16 +106,4 @@ export const {
   useSearchMoviesQuery,
   useGetMovieByIdQuery,
   useGetRandomMovieQuery,
-  useGetSeasonsQuery,
-  useGetMovieAwardsQuery,
-  useGetPossibleValuesQuery,
-  useGetPersonByIdQuery,
-  useGetPersonsQuery,
-  useSearchPersonsQuery,
-  useGetReviewsQuery,
-  useGetStudiosQuery,
-  useGetKeywordsQuery,
-  useGetImagesQuery,
-  useGetListsQuery,
-  useGetListBySlugQuery,
 } = poiskkino;

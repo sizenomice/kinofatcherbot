@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { useTheme } from '../hooks/useTheme'
 import './LoadingScreen.css'
 
@@ -12,6 +13,8 @@ function LoadingScreen() {
             src="/favicon.svg" 
             alt="App Icon" 
             className="loading-icon"
+            loading="eager"
+            decoding="async"
           />
         </div>
       </div>
@@ -19,4 +22,4 @@ function LoadingScreen() {
   )
 }
 
-export default LoadingScreen
+export default memo(LoadingScreen)

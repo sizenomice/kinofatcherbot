@@ -1,7 +1,10 @@
-import { useEffect } from 'react'
+import { useEffect, useCallback, useMemo, memo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { Movie } from '../store/slices/poiskkinoSlice'
 import { useAppSelector } from '../hooks/useAppSelector'
+import CloseIcon from './icons/CloseIcon'
+import PlayIcon from './icons/PlayIcon'
+import { handleImageError, getMoviePosterUrl } from '../utils/image'
 import './MoviePopup.css'
 
 interface MoviePopupProps {
@@ -13,48 +16,37 @@ function MoviePopup({ movie, onClose }: MoviePopupProps) {
   const navigate = useNavigate()
   const subscription = useAppSelector((state) => state.subscription)
 
-  useEffect(() => {
-    const mainContent = document.querySelector('.main-content') as HTMLElement
-    
-    if (movie) {
-      // Блокируем скролл body
-      document.body.style.overflow = 'hidden'
-      document.body.classList.add('popup-open')
-      
-      // Блокируем скролл основного контента
-      if (mainContent) {
-        mainContent.style.overflow = 'hidden'
-        mainContent.style.touchAction = 'none'
-      }
-      
-      // Блокируем touch-события для предотвращения скролла на мобильных
-      // Разрешаем скролл только внутри попапа
-      const preventScroll = (e: TouchEvent) => {
-        const target = e.target as HTMLElement
-        const popupContainer = document.querySelector('.popup-container') as HTMLElement
-        const popupOverlay = document.querySelector('.popup-overlay') as HTMLElement
-        
-        // Разрешаем скролл внутри попапа
-        if (popupContainer?.contains(target) || popupOverlay?.contains(target)) {
-          return
-        }
-        
-        // Блокируем скролл везде кроме попапа
-        e.preventDefault()
-      }
-      
-      document.addEventListener('touchmove', preventScroll, { passive: false })
-      
-      return () => {
-        document.body.style.overflow = ''
-        document.body.classList.remove('popup-open')
-        if (mainContent) {
-          mainContent.style.overflow = ''
-          mainContent.style.touchAction = ''
-        }
-        document.removeEventListener('touchmove', preventScroll)
-      }
+  const hasActiveSubscription = useMemo(() => {
+    if (!subscription.endDate) return false
+    const endDate = new Date(subscription.endDate)
+    return endDate > new Date()
+  }, [subscription.endDate])
+
+  const handleWatch = useCallback(() => {
+    if (hasActiveSubscription) {
+      // Здесь можно добавить логику для просмотра фильма
+      alert('Начинаем просмотр фильма!')
     } else {
+      navigate('/payments')
+      onClose()
+    }
+  }, [hasActiveSubscription, navigate, onClose])
+
+  // Упрощенная логика блокировки скролла
+  useEffect(() => {
+    if (!movie) return
+
+    // Блокируем скролл body
+    document.body.style.overflow = 'hidden'
+    document.body.classList.add('popup-open')
+    
+    const mainContent = document.querySelector('.main-content') as HTMLElement
+    if (mainContent) {
+      mainContent.style.overflow = 'hidden'
+      mainContent.style.touchAction = 'none'
+    }
+    
+    return () => {
       document.body.style.overflow = ''
       document.body.classList.remove('popup-open')
       if (mainContent) {
@@ -64,24 +56,11 @@ function MoviePopup({ movie, onClose }: MoviePopupProps) {
     }
   }, [movie])
 
-  const hasActiveSubscription = () => {
-    if (!subscription.endDate) return false
-    const endDate = new Date(subscription.endDate)
-    return endDate > new Date()
-  }
-
-  const handleWatch = () => {
-    if (hasActiveSubscription()) {
-      // Здесь можно добавить логику для просмотра фильма
-      // Например, открыть видео плеер или перейти на страницу просмотра
-      alert('Начинаем просмотр фильма!')
-    } else {
-      navigate('/payments')
-      onClose()
-    }
-  }
-
   if (!movie) return null
+
+  const posterUrl = getMoviePosterUrl(movie.poster)
+  const title = movie.name || movie.alternativeName || 'Без названия'
+  const alternativeName = movie.alternativeName && movie.alternativeName !== movie.name ? movie.alternativeName : null
 
   return (
     <>
@@ -90,27 +69,22 @@ function MoviePopup({ movie, onClose }: MoviePopupProps) {
         <div className="popup-content">
           <div className="popup-poster">
             <button className="popup-close" onClick={onClose} aria-label="Закрыть">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M18 6L6 18M6 6l12 12" />
-              </svg>
+              <CloseIcon />
             </button>
             <img
-              src={movie.poster?.url || movie.poster?.previewUrl || 'https://via.placeholder.com/300x450?text=No+Image'}
-              alt={movie.name || movie.alternativeName || 'Фильм'}
-              onError={(e) => {
-                const target = e.target as HTMLImageElement
-                target.src = 'https://via.placeholder.com/300x450?text=No+Image'
-              }}
+              src={posterUrl}
+              alt={title}
+              loading="eager"
+              decoding="async"
+              onError={handleImageError}
             />
           </div>
           
           <div className="popup-info">
-            <h2 className="popup-title">
-              {movie.name || movie.alternativeName || 'Без названия'}
-            </h2>
+            <h2 className="popup-title">{title}</h2>
             
-            {movie.alternativeName && movie.alternativeName !== movie.name && (
-              <p className="popup-alternative-name">{movie.alternativeName}</p>
+            {alternativeName && (
+              <p className="popup-alternative-name">{alternativeName}</p>
             )}
             
             <div className="popup-meta">
@@ -128,7 +102,7 @@ function MoviePopup({ movie, onClose }: MoviePopupProps) {
             {movie.genres && movie.genres.length > 0 && (
               <div className="popup-genres">
                 {movie.genres.map((genre, index) => (
-                  <span key={index} className="popup-genre-tag">
+                  <span key={`${genre.name}-${index}`} className="popup-genre-tag">
                     {genre.name}
                   </span>
                 ))}
@@ -139,7 +113,7 @@ function MoviePopup({ movie, onClose }: MoviePopupProps) {
               <div className="popup-countries">
                 <span className="popup-label">Страны: </span>
                 {movie.countries.map((country, index) => (
-                  <span key={index}>
+                  <span key={`${country.name}-${index}`}>
                     {country.name}
                     {index < movie.countries!.length - 1 && ', '}
                   </span>
@@ -154,9 +128,7 @@ function MoviePopup({ movie, onClose }: MoviePopupProps) {
             )}
             
             <button className="popup-watch-button" onClick={handleWatch}>
-              <svg className="watch-button-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M8 5v14l11-7z" />
-              </svg>
+              <PlayIcon className="watch-button-icon" />
               Смотреть
             </button>
           </div>
@@ -166,5 +138,4 @@ function MoviePopup({ movie, onClose }: MoviePopupProps) {
   )
 }
 
-export default MoviePopup
-
+export default memo(MoviePopup)

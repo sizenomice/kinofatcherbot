@@ -1,264 +1,206 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { useSearchMoviesQuery, useGetMoviesQuery } from '../store/slices/poiskkinoSlice'
 import { useDebounce } from '../hooks/useDebounce'
 import { useAppDispatch } from '../hooks/useAppDispatch'
 import { useAppSelector } from '../hooks/useAppSelector'
 import {
   setSearchQuery,
-  setPage,
   setAllMovies,
+  resetPagination,
+  setPage,
   appendMovies,
   setHasMore,
-  resetPagination,
 } from '../store/slices/searchSlice'
+import { useIntersectionObserver } from '../hooks/useIntersectionObserver'
 import type { Movie } from '../store/slices/poiskkinoSlice'
 import MoviePopup from '../components/MoviePopup'
+import MovieCard from '../components/MovieCard'
+import SearchInput from '../components/common/SearchInput'
+import LoadingIcon from '../components/common/LoadingIcon'
+import ErrorMessage from '../components/common/ErrorMessage'
+import EmptyState from '../components/common/EmptyState'
 import './Home.css'
 
 function Home() {
   const dispatch = useAppDispatch()
-  const { searchQuery, page, allMovies, hasMore } = useAppSelector((state) => state.search)
+  const { searchQuery, allMovies, page, hasMore } = useAppSelector((state) => state.search)
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null)
-  const observerTarget = useRef<HTMLDivElement>(null)
-  const isLoadingRef = useRef(false)
-  const pageRef = useRef(page)
+  const isLoadingMoreRef = useRef(false)
   
   const debouncedSearchQuery = useDebounce(searchQuery, 500)
+  const trimmedDebouncedQuery = useMemo(() => debouncedSearchQuery.trim(), [debouncedSearchQuery])
+  const trimmedSearchQuery = useMemo(() => searchQuery.trim(), [searchQuery])
+  const isTyping = useMemo(() => trimmedSearchQuery !== trimmedDebouncedQuery, [trimmedSearchQuery, trimmedDebouncedQuery])
   
-  useEffect(() => {
-    pageRef.current = page
-  }, [page])
-
-  const {
-    data: searchData,
-    isLoading: isSearching,
-    error: searchError,
-  } = useSearchMoviesQuery(
-    { query: debouncedSearchQuery, limit: 20, page },
-    { skip: !debouncedSearchQuery.trim() }
+  const { data: searchData, isLoading: isSearching, error: searchError } = useSearchMoviesQuery(
+    { query: trimmedDebouncedQuery, limit: 20, page: 1 },
+    { skip: !trimmedDebouncedQuery }
   )
 
-  const {
-    data: moviesData,
-    isLoading: isLoadingMovies,
-    error: moviesError,
-  } = useGetMoviesQuery(
-    { page, limit: 20 },
-    { skip: !!debouncedSearchQuery.trim() }
+  const { data: moviesData, isLoading: isLoadingMovies, error: moviesError } = useGetMoviesQuery(
+    { page: 1, limit: 20 },
+    { skip: !!trimmedDebouncedQuery }
   )
 
-  const isTyping = searchQuery.trim() !== debouncedSearchQuery.trim()
-  
-  const currentData = debouncedSearchQuery.trim() 
-    ? searchData 
-    : (searchQuery.trim() ? null : moviesData)
-  const isLoading = debouncedSearchQuery.trim() 
-    ? isSearching 
-    : (searchQuery.trim() ? false : isLoadingMovies)
-  const error = debouncedSearchQuery.trim() ? searchError : moviesError
-  
+  const { data: searchDataPage, isLoading: isSearchingPage } = useSearchMoviesQuery(
+    { query: trimmedDebouncedQuery, limit: 20, page: page },
+    { skip: !trimmedDebouncedQuery || page === 1 || !hasMore }
+  )
+
+  const { data: moviesDataPage, isLoading: isLoadingMoviesPage } = useGetMoviesQuery(
+    { page: page, limit: 20 },
+    { skip: !!trimmedDebouncedQuery || page === 1 || !hasMore }
+  )
+
+  const currentData = useMemo(() => {
+    if (trimmedDebouncedQuery) return searchData
+    if (trimmedSearchQuery) return null
+    return moviesData
+  }, [trimmedDebouncedQuery, trimmedSearchQuery, searchData, moviesData])
+
+  const isLoading = useMemo(() => {
+    if (trimmedDebouncedQuery) return isSearching
+    if (trimmedSearchQuery) return false
+    return isLoadingMovies
+  }, [trimmedDebouncedQuery, trimmedSearchQuery, isSearching, isLoadingMovies])
+
+  const error = useMemo(() => {
+    return trimmedDebouncedQuery ? searchError : moviesError
+  }, [trimmedDebouncedQuery, searchError, moviesError])
+
   const showLoading = isLoading || isTyping
 
   useEffect(() => {
     dispatch(resetPagination())
-    isLoadingRef.current = false
-  }, [debouncedSearchQuery, dispatch])
+    isLoadingMoreRef.current = false
+  }, [trimmedDebouncedQuery, dispatch])
 
   useEffect(() => {
-    if (searchQuery.trim() && !debouncedSearchQuery.trim()) {
+    if (trimmedSearchQuery && !trimmedDebouncedQuery) {
       dispatch(setAllMovies([]))
-      dispatch(setHasMore(true))
     }
-  }, [searchQuery, debouncedSearchQuery, dispatch])
+  }, [trimmedSearchQuery, trimmedDebouncedQuery, dispatch])
 
   useEffect(() => {
-    if (currentData?.docs && currentData.docs.length > 0) {
-      if (page === 1) {
-        dispatch(setAllMovies(currentData.docs))
+    if (!currentData || isLoading) return
+
+    if (currentData.docs && currentData.docs.length > 0) {
+      dispatch(setAllMovies(currentData.docs))
+      const totalPages = currentData.pages || 0
+      const currentPage = currentData.page || 1
+      dispatch(setHasMore(currentPage < totalPages))
+    }
+  }, [currentData, isLoading, dispatch])
+
+  useEffect(() => {
+    const paginationData = trimmedDebouncedQuery ? searchDataPage : moviesDataPage
+    const isPaginationLoading = trimmedDebouncedQuery ? isSearchingPage : isLoadingMoviesPage
+
+    if (page === 1 || isPaginationLoading) return
+
+    if (paginationData) {
+      if (paginationData.docs && paginationData.docs.length > 0) {
+        dispatch(appendMovies(paginationData.docs))
+        const totalPages = paginationData.pages || 0
+        const currentPage = paginationData.page || 1
+        dispatch(setHasMore(currentPage < totalPages))
       } else {
-        dispatch(appendMovies(currentData.docs))
+        dispatch(setHasMore(false))
       }
-      
-      const totalPages = currentData.pages || 1
-      const hasMorePages = page < totalPages
-      const hasMoreItems = currentData.docs.length >= (currentData.limit || 20)
-      dispatch(setHasMore(hasMorePages && hasMoreItems))
-    } else if (currentData?.docs && currentData.docs.length === 0 && page > 1) {
-      dispatch(setHasMore(false))
+      isLoadingMoreRef.current = false
     }
-    isLoadingRef.current = false
-  }, [currentData, page, dispatch])
+  }, [searchDataPage, moviesDataPage, isSearchingPage, isLoadingMoviesPage, page, trimmedDebouncedQuery, dispatch])
 
-  const handleObserver = useCallback((entries: IntersectionObserverEntry[]) => {
-    const [target] = entries
-    if (target.isIntersecting && hasMore && !isLoading && !isTyping && allMovies.length > 0 && !isLoadingRef.current) {
-      isLoadingRef.current = true
-      dispatch(setPage(pageRef.current + 1))
-    }
-  }, [hasMore, isLoading, isTyping, allMovies.length, dispatch])
+  const loadNextPage = useCallback(() => {
+    if (isLoadingMoreRef.current || !hasMore) return
 
-  useEffect(() => {
-    const element = observerTarget.current
-    if (!element || !hasMore) return
+    const isCurrentlyLoading = trimmedDebouncedQuery 
+      ? isSearchingPage 
+      : isLoadingMoviesPage
 
-    const option = {
+    if (isCurrentlyLoading) return
+
+    isLoadingMoreRef.current = true
+    dispatch(setPage(page + 1))
+  }, [page, hasMore, trimmedDebouncedQuery, isSearchingPage, isLoadingMoviesPage, dispatch])
+
+  const isPaginationLoading = useMemo(() => {
+    return trimmedDebouncedQuery ? isSearchingPage : isLoadingMoviesPage
+  }, [trimmedDebouncedQuery, isSearchingPage, isLoadingMoviesPage])
+
+  const { ref: loadMoreRef } = useIntersectionObserver(
+    loadNextPage,
+    {
       threshold: 0.1,
       rootMargin: '200px',
+      enabled: hasMore && !isLoading && !isPaginationLoading && allMovies.length > 0,
     }
+  )
 
-    const observer = new IntersectionObserver(handleObserver, option)
-    observer.observe(element)
-
-    return () => {
-      observer.disconnect()
-    }
-  }, [handleObserver, hasMore])
-
-  const handleClear = () => {
+  const handleClear = useCallback(() => {
     dispatch(setSearchQuery(''))
     dispatch(resetPagination())
-  }
+    isLoadingMoreRef.current = false
+  }, [dispatch])
+
+  const handleSearchChange = useCallback((value: string) => {
+    dispatch(setSearchQuery(value))
+  }, [dispatch])
+
+  const handleMovieClick = useCallback((movie: Movie) => {
+    setSelectedMovie(movie)
+  }, [])
+
+  const handleClosePopup = useCallback(() => {
+    setSelectedMovie(null)
+  }, [])
 
   return (
     <div className="home-page">
-      <div className="search-container">
-        <div className="search-form">
-          <div className="search-input-wrapper">
-            <svg className="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-            <input
-              type="text"
-              className="search-input"
-              placeholder="Введите название фильма..."
-              value={searchQuery}
-              onChange={(e) => dispatch(setSearchQuery(e.target.value))}
-            />
-            {searchQuery && (
-              <button
-                type="button"
-                className="clear-button"
-                onClick={handleClear}
-              >
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M18 6L6 18M6 6l12 12" />
-                </svg>
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
+      <SearchInput
+        value={searchQuery}
+        onChange={handleSearchChange}
+        onClear={handleClear}
+      />
 
-      {error && (
-        <div className="error-message">
-          Идут технические работы
+      {error && <ErrorMessage />}
+
+      {showLoading && allMovies.length === 0 && (
+        <div className="loading-container">
+          <LoadingIcon />
         </div>
       )}
-
-      {showLoading && page === 1 && allMovies.length === 0 ? (
-        <div className="loading-container">
-          <div className="loading-icon-wrapper">
-            <img 
-              src="/favicon.svg" 
-              alt="Loading" 
-              className="loading-icon"
-            />
-          </div>
-        </div>
-      ) : null}
 
       {allMovies.length > 0 && (
         <>
           <div className="movies-grid">
             {allMovies.map((movie) => (
-              <div 
-                key={movie.id} 
-                className="movie-card"
-                onClick={() => setSelectedMovie(movie)}
-              >
-                <div className="movie-poster">
-                  <img
-                    src={movie.poster?.url || movie.poster?.previewUrl || 'https://via.placeholder.com/300x450?text=No+Image'}
-                    alt={movie.name || movie.alternativeName || 'Фильм'}
-                    onError={(e) => {
-                      const target = e.target as HTMLImageElement
-                      target.src = 'https://via.placeholder.com/300x450?text=No+Image'
-                    }}
-                  />
-                </div>
-                <div className="movie-info">
-                  <h3 className="movie-title">
-                    {movie.name || movie.alternativeName || 'Без названия'}
-                  </h3>
-                  <p className="movie-year">
-                    {movie.year && `${movie.year}`}
-                    {movie.rating?.kp && ` • ⭐ ${movie.rating.kp.toFixed(1)}`}
-                  </p>
-                </div>
-              </div>
+              <MovieCard
+                key={movie.id}
+                movie={movie}
+                onClick={() => handleMovieClick(movie)}
+              />
             ))}
           </div>
-          
-          {isLoading && page > 1 && !isTyping && (
-            <div className="loading-container" style={{ padding: '24px' }}>
-              <div className="loading-icon-wrapper">
-                <img 
-                  src="/favicon.svg" 
-                  alt="Loading" 
-                  className="loading-icon"
-                />
-              </div>
-            </div>
-          )}
-          
-          {hasMore && !isLoading && (
-            <div 
-              ref={observerTarget} 
-              style={{ 
-                height: '50px', 
-                marginTop: '20px',
-                width: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
-              <div className="loading-icon-wrapper-small">
-                <img 
-                  src="/favicon.svg" 
-                  alt="Loading" 
-                  className="loading-icon-small"
-                />
-              </div>
-            </div>
-          )}
-          
-          {!hasMore && allMovies.length > 0 && (
-            <div style={{ 
-              textAlign: 'center', 
-              padding: '24px', 
-              color: '#6b7280',
-              fontSize: '14px'
-            }}>
-              Все фильмы загружены
+          {hasMore && (
+            <div ref={loadMoreRef} style={{ height: '20px', width: '100%' }}>
+              {(trimmedDebouncedQuery ? isSearchingPage : isLoadingMoviesPage) && (
+                <div className="loading-container">
+                  <LoadingIcon />
+                </div>
+              )}
             </div>
           )}
         </>
       )}
 
-      {!showLoading && allMovies.length === 0 && debouncedSearchQuery.trim() && !isTyping && (
-        <div className="empty-state">
-          <svg className="empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          <p>Фильмы не найдены</p>
-          <p className="empty-subtitle">Попробуйте изменить запрос</p>
-        </div>
+      {!showLoading && allMovies.length === 0 && trimmedDebouncedQuery && !isTyping && (
+        <EmptyState />
       )}
 
       <MoviePopup 
         movie={selectedMovie} 
-        onClose={() => setSelectedMovie(null)} 
+        onClose={handleClosePopup} 
       />
     </div>
   )

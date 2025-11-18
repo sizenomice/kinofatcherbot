@@ -9,6 +9,7 @@ interface SubscriptionState {
 interface PurchasePayload {
   months: number
   price: number
+  paymentType?: 'rubles' | 'stars'
 }
 
 const initialState: SubscriptionState = {

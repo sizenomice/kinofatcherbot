@@ -13,42 +13,6 @@
   width: 100%;
 }
 
-.about-header {
-  text-align: center;
-  margin-bottom: 24px;
-}
-
-.app-icon {
-  width: 80px;
-  height: 80px;
-  margin: 0 auto 24px;
-  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-  border-radius: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  box-shadow: 0 8px 16px rgba(99, 102, 241, 0.3);
-}
-
-.app-icon svg {
-  width: 48px;
-  height: 48px;
-}
-
-.about-title {
-  font-size: 36px;
-  font-weight: 700;
-  margin-bottom: 8px;
-  color: #111827;
-}
-
-.about-subtitle {
-  font-size: 18px;
-  color: #6b7280;
-  font-weight: 400;
-}
-
 .active-subscription {
   background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   border-radius: 16px;
@@ -315,11 +279,25 @@
   color: #111827;
 }
 
-.subscription-price {
+.subscription-prices-container {
   display: flex;
-  align-items: baseline;
-  gap: 4px;
+  gap: 16px;
   margin-bottom: 8px;
+  min-width: 0;
+}
+
+.subscription-price {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.subscription-price-stars {
+  text-align: right;
+  align-items: flex-end;
 }
 
 .price-wrapper {
@@ -327,39 +305,112 @@
   align-items: baseline;
   gap: 12px;
   flex-wrap: wrap;
+  min-width: 0;
 }
 
 .old-price {
-  font-size: 24px;
+  font-size: clamp(16px, 4vw, 24px);
   font-weight: 500;
   color: #9ca3af;
   text-decoration: line-through;
   line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .current-price {
   display: flex;
   align-items: baseline;
   gap: 4px;
+  min-width: 0;
+  flex-wrap: wrap;
 }
 
 .price-amount {
-  font-size: 36px;
+  font-size: clamp(24px, 6vw, 36px);
   font-weight: 700;
   color: #6366f1;
   line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .price-currency {
-  font-size: 24px;
+  font-size: clamp(16px, 4vw, 24px);
   font-weight: 600;
   color: #6366f1;
+  flex-shrink: 0;
 }
 
 .subscription-monthly {
-  font-size: 14px;
+  font-size: clamp(12px, 3vw, 14px);
   color: #6b7280;
   margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.subscribe-button-split {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  transition: all 0.3s ease;
+}
+
+.subscribe-button-split:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+}
+
+.subscribe-button-split:active {
+  transform: translateY(0);
+}
+
+.subscribe-button-left,
+.subscribe-button-right {
+  flex: 1;
+  padding: 14px 16px;
+  background: transparent;
+  color: white;
+  border: none;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.subscribe-button-left:hover,
+.subscribe-button-right:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.subscribe-button-left:active,
+.subscribe-button-right:active {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.subscribe-button-divider {
+  width: 1px;
+  height: 24px;
+  background: rgba(255, 255, 255, 0.3);
+  flex-shrink: 0;
+}
+
+.button-text {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .subscribe-button {
@@ -426,14 +477,6 @@
   border-radius: 4px;
   background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
   transform: scale(1);
-}
-
-.dark .about-title {
-  color: #e5e7eb;
-}
-
-.dark .about-subtitle {
-  color: #9ca3af;
 }
 
 .dark .subscription-card {
@@ -528,24 +571,6 @@
     font-size: 12px;
   }
 
-  .about-title {
-    font-size: 28px;
-  }
-
-  .about-subtitle {
-    font-size: 16px;
-  }
-
-  .app-icon {
-    width: 64px;
-    height: 64px;
-  }
-
-  .app-icon svg {
-    width: 36px;
-    height: 36px;
-  }
-
   .subscription-card {
     padding: 20px;
   }
@@ -554,22 +579,75 @@
     font-size: 20px;
   }
 
+  .subscription-prices-container {
+    gap: 8px;
+    flex-direction: row;
+  }
+
+  .subscription-price-stars {
+    text-align: right;
+    align-items: flex-end;
+  }
+
   .old-price {
-    font-size: 20px;
+    font-size: clamp(14px, 3.5vw, 18px);
   }
 
   .price-amount {
-    font-size: 32px;
+    font-size: clamp(20px, 5vw, 28px);
   }
 
   .price-currency {
-    font-size: 20px;
+    font-size: clamp(14px, 3.5vw, 18px);
+  }
+
+  .subscription-monthly {
+    font-size: clamp(11px, 2.5vw, 13px);
   }
 
   .popular-badge {
     right: 20px;
     font-size: 11px;
     padding: 5px 12px;
+  }
+}
+
+@media (max-width: 360px) {
+  .subscription-card {
+    padding: 16px;
+  }
+
+  .subscription-months {
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+
+  .subscription-prices-container {
+    gap: 6px;
+  }
+
+  .price-wrapper {
+    gap: 6px;
+  }
+
+  .old-price {
+    font-size: 12px;
+  }
+
+  .price-amount {
+    font-size: 18px;
+  }
+
+  .price-currency {
+    font-size: 12px;
+  }
+
+  .subscription-monthly {
+    font-size: 10px;
+  }
+
+  .subscription-header {
+    margin-bottom: 16px;
   }
 
   .subscription-card {
@@ -578,8 +656,95 @@
     max-width: calc(100% - 20px);
   }
 
+  .subscribe-button-left,
+  .subscribe-button-right {
+    padding: 10px 8px;
+    font-size: 12px;
+  }
+
+  .subscribe-button-divider {
+    height: 18px;
+  }
+
   .swiper-pagination {
     margin-top: 10px;
+  }
+}
+
+@media (max-width: 320px) {
+  .subscription-card {
+    padding: 12px;
+  }
+
+  .subscription-months {
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+
+  .subscription-prices-container {
+    gap: 4px;
+  }
+
+  .price-wrapper {
+    gap: 4px;
+  }
+
+  .old-price {
+    font-size: 11px;
+  }
+
+  .price-amount {
+    font-size: 16px;
+  }
+
+  .price-currency {
+    font-size: 11px;
+  }
+
+  .subscription-monthly {
+    font-size: 9px;
+  }
+
+  .subscription-header {
+    margin-bottom: 12px;
+  }
+
+  .subscribe-button-left,
+  .subscribe-button-right {
+    padding: 8px 6px;
+    font-size: 11px;
+  }
+
+  .popular-badge {
+    top: 12px;
+    right: 12px;
+    font-size: 9px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    z-index: 10;
+  }
+
+  .subscription-header {
+    position: relative;
+  }
+
+  .subscription-prices-container {
+    padding-right: 0;
+    margin-right: 0;
+    margin-top: 4px;
+  }
+
+  .subscription-price-stars {
+    padding-right: 0;
+    margin-right: 0;
+  }
+
+  .subscription-price-stars .price-wrapper {
+    justify-content: flex-end;
+  }
+
+  .price-wrapper {
+    max-width: 100%;
   }
 
   .swiper-pagination-bullet {
