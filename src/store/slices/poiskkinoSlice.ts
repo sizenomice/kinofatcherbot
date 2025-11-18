@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-const API_KEY = 'N727ATZ-KP347H3-PB1T8QT-SMREPN3';
+const API_KEY = 'GDCF1AP-7494FC8-GT86M2M-DBB9K3X';
 const BASE_URL = 'https://api.poiskkino.dev';
 
 export interface Movie {

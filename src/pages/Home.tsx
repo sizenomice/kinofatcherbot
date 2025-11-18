@@ -20,8 +20,14 @@ function Home() {
   const { searchQuery, page, allMovies, hasMore } = useAppSelector((state) => state.search)
   const [selectedMovie, setSelectedMovie] = useState<Movie | null>(null)
   const observerTarget = useRef<HTMLDivElement>(null)
+  const isLoadingRef = useRef(false)
+  const pageRef = useRef(page)
   
   const debouncedSearchQuery = useDebounce(searchQuery, 500)
+  
+  useEffect(() => {
+    pageRef.current = page
+  }, [page])
 
   const {
     data: searchData,
@@ -55,6 +61,7 @@ function Home() {
 
   useEffect(() => {
     dispatch(resetPagination())
+    isLoadingRef.current = false
   }, [debouncedSearchQuery, dispatch])
 
   useEffect(() => {
@@ -79,14 +86,16 @@ function Home() {
     } else if (currentData?.docs && currentData.docs.length === 0 && page > 1) {
       dispatch(setHasMore(false))
     }
+    isLoadingRef.current = false
   }, [currentData, page, dispatch])
 
   const handleObserver = useCallback((entries: IntersectionObserverEntry[]) => {
     const [target] = entries
-    if (target.isIntersecting && hasMore && !isLoading && !isTyping && allMovies.length > 0) {
-      dispatch(setPage(page + 1))
+    if (target.isIntersecting && hasMore && !isLoading && !isTyping && allMovies.length > 0 && !isLoadingRef.current) {
+      isLoadingRef.current = true
+      dispatch(setPage(pageRef.current + 1))
     }
-  }, [hasMore, isLoading, isTyping, allMovies.length, page, dispatch])
+  }, [hasMore, isLoading, isTyping, allMovies.length, dispatch])
 
   useEffect(() => {
     const element = observerTarget.current
@@ -142,9 +151,7 @@ function Home() {
 
       {error && (
         <div className="error-message">
-          {'status' in error
-            ? `Ошибка: ${error.status}`
-            : 'Ошибка при загрузке фильмов'}
+          Идут технические работы
         </div>
       )}
 

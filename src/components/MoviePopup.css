@@ -30,6 +30,12 @@
   z-index: 2000;
   animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+}
+
+.popup-container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
 }
 
 @keyframes slideUp {
@@ -265,35 +271,8 @@
 
 /* Mobile responsive */
 @media (min-width: 768px) {
-  .popup-container {
-    max-width: 600px;
-    left: 50%;
-    border-radius: 24px;
-    max-height: 80vh;
-    transform: translateX(-50%);
-  }
-
-  @keyframes slideUp {
-    from {
-      transform: translateX(-50%) translateY(100%);
-    }
-    to {
-      transform: translateX(-50%) translateY(0);
-    }
-  }
-
   .popup-content {
-    flex-direction: row;
     padding: 32px;
-  }
-
-  .popup-poster {
-    flex-shrink: 0;
-    margin: 0;
-  }
-
-  .popup-info {
-    flex: 1;
   }
 }
 

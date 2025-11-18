@@ -1,10 +1,10 @@
 .bottom-navigation {
   position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  bottom: max(10px, env(safe-area-inset-bottom, 0px));
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
   align-items: center;
   background: rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(20px);
@@ -13,8 +13,9 @@
   border-top: none;
   box-shadow: none;
   z-index: 1000;
-  margin: 0 10px max(10px, env(safe-area-inset-bottom, 0px)) 10px;
   border-radius: 20px;
+  width: fit-content;
+  gap: 4px;
 }
 
 .nav-item {
@@ -27,11 +28,10 @@
   transition: all 0.2s ease;
   padding: 4px 12px;
   border-radius: 10px;
-  min-width: 50px;
+  width: 80px;
   position: relative;
   gap: 3px;
-  flex: 1;
-  max-width: 100px;
+  box-sizing: border-box;
 }
 
 .nav-item:hover {
@@ -61,6 +61,7 @@
   transition: all 0.2s ease;
   margin-top: 1px;
   line-height: 1.2;
+  text-align: center;
 }
 
 .nav-item.active .nav-label {

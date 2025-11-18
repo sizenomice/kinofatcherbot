@@ -322,6 +322,27 @@
   margin-bottom: 8px;
 }
 
+.price-wrapper {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.old-price {
+  font-size: 24px;
+  font-weight: 500;
+  color: #9ca3af;
+  text-decoration: line-through;
+  line-height: 1;
+}
+
+.current-price {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
 .price-amount {
   font-size: 36px;
   font-weight: 700;
@@ -431,6 +452,10 @@
   color: #9ca3af;
 }
 
+.dark .old-price {
+  color: #6b7280;
+}
+
 @media (max-width: 640px) {
   .active-subscription {
     padding: 20px;
@@ -526,6 +551,10 @@
   }
 
   .subscription-months {
+    font-size: 20px;
+  }
+
+  .old-price {
     font-size: 20px;
   }
 

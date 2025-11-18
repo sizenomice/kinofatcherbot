@@ -142,8 +142,13 @@ function Payments() {
                     {plan.months} {getMonthLabel(plan.months)}
                   </h3>
                   <div className="subscription-price">
-                    <span className="price-amount">{formatPrice(plan.price)}</span>
-                    <span className="price-currency">₽</span>
+                    <div className="price-wrapper">
+                      <span className="old-price">{formatPrice(Math.round(plan.price * 1.3))}₽</span>
+                      <div className="current-price">
+                        <span className="price-amount">{formatPrice(plan.price)}</span>
+                        <span className="price-currency">₽</span>
+                      </div>
+                    </div>
                   </div>
                   <p className="subscription-monthly">
                     {formatPrice(getMonthlyPrice(plan.price, plan.months))}₽ в месяц
