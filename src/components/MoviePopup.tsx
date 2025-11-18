@@ -14,17 +14,53 @@ function MoviePopup({ movie, onClose }: MoviePopupProps) {
   const subscription = useAppSelector((state) => state.subscription)
 
   useEffect(() => {
+    const mainContent = document.querySelector('.main-content') as HTMLElement
+    
     if (movie) {
+      // Блокируем скролл body
       document.body.style.overflow = 'hidden'
       document.body.classList.add('popup-open')
+      
+      // Блокируем скролл основного контента
+      if (mainContent) {
+        mainContent.style.overflow = 'hidden'
+        mainContent.style.touchAction = 'none'
+      }
+      
+      // Блокируем touch-события для предотвращения скролла на мобильных
+      // Разрешаем скролл только внутри попапа
+      const preventScroll = (e: TouchEvent) => {
+        const target = e.target as HTMLElement
+        const popupContainer = document.querySelector('.popup-container') as HTMLElement
+        const popupOverlay = document.querySelector('.popup-overlay') as HTMLElement
+        
+        // Разрешаем скролл внутри попапа
+        if (popupContainer?.contains(target) || popupOverlay?.contains(target)) {
+          return
+        }
+        
+        // Блокируем скролл везде кроме попапа
+        e.preventDefault()
+      }
+      
+      document.addEventListener('touchmove', preventScroll, { passive: false })
+      
+      return () => {
+        document.body.style.overflow = ''
+        document.body.classList.remove('popup-open')
+        if (mainContent) {
+          mainContent.style.overflow = ''
+          mainContent.style.touchAction = ''
+        }
+        document.removeEventListener('touchmove', preventScroll)
+      }
     } else {
       document.body.style.overflow = ''
       document.body.classList.remove('popup-open')
-    }
-    
-    return () => {
-      document.body.style.overflow = ''
-      document.body.classList.remove('popup-open')
+      if (mainContent) {
+        mainContent.style.overflow = ''
+        mainContent.style.touchAction = ''
+      }
     }
   }, [movie])
 

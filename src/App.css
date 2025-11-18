@@ -69,6 +69,12 @@ body.loaded::before {
   display: none;
 }
 
+/* Блокировка скролла при открытом попапе */
+body.popup-open .main-content {
+  overflow: hidden !important;
+  touch-action: none !important;
+}
+
 .app-container.dark {
   background-color: #111827;
   color: #e5e7eb;
