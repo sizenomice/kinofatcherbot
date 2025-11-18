@@ -7,7 +7,7 @@ interface UseScrollPaginationOptions {
 
 interface UseScrollPaginationReturn {
   activeIndex: number
-  scrollRef: React.RefObject<HTMLDivElement>
+  scrollRef: React.RefObject<HTMLDivElement | null>
   handlePaginationClick: (index: number) => void
 }
 
