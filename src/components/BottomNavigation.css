@@ -92,3 +92,8 @@
 .dark .nav-item.active .nav-label {
   color: #3390ec;
 }
+
+/* Hide navigation when popup is open */
+body.popup-open .bottom-navigation {
+  display: none;
+}

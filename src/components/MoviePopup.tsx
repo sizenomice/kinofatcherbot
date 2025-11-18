@@ -16,12 +16,15 @@ function MoviePopup({ movie, onClose }: MoviePopupProps) {
   useEffect(() => {
     if (movie) {
       document.body.style.overflow = 'hidden'
+      document.body.classList.add('popup-open')
     } else {
       document.body.style.overflow = ''
+      document.body.classList.remove('popup-open')
     }
     
     return () => {
       document.body.style.overflow = ''
+      document.body.classList.remove('popup-open')
     }
   }, [movie])
 
